@@ -289,6 +289,7 @@ public class WebSocketClientWrapper {
         if (session != null) {
             session.close();
         }
+
     }
 
     public void setServerNameOrigin(String serverOrigin) {
