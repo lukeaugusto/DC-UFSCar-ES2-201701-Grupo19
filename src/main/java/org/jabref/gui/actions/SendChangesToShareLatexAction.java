@@ -22,7 +22,7 @@ public class SendChangesToShareLatexAction extends AbstractAction {
 
         ShareLatexManager manager = Globals.shareLatexManager;
         StateManager stateManager = Globals.stateManager;
-        manager.sendNewDataseContent(stateManager.getActiveDatabase().get());
+        manager.sendNewDatabaseContent(stateManager.getActiveDatabase().get());
         System.out.println("Send changes");
     }
 

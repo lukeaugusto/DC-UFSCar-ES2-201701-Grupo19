@@ -64,7 +64,7 @@ public class ShareLatexManager {
         });
     }
 
-    public void sendNewDataseContent(BibDatabaseContext database) {
+    public void sendNewDatabaseContent(BibDatabaseContext database) {
         try {
             BibtexDatabaseWriter<StringSaveSession> databaseWriter = new BibtexDatabaseWriter<>(StringSaveSession::new);
             SavePreferences preferences = new SavePreferences().withEncoding(StandardCharsets.UTF_8).withSaveInOriginalOrder(true);

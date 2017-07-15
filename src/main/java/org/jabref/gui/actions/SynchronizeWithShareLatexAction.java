@@ -10,9 +10,9 @@ import javafx.application.Platform;
 import org.jabref.gui.IconTheme;
 import org.jabref.gui.sharelatex.ShareLatexLoginDialogView;
 
-public class ManageShareLatexAction extends AbstractAction {
+public class SynchronizeWithShareLatexAction extends AbstractAction {
 
-    public ManageShareLatexAction() {
+    public SynchronizeWithShareLatexAction() {
         super();
         putValue(Action.NAME, "Synchronize with ShareLaTeX");
         putValue(Action.SMALL_ICON, IconTheme.getImage("sharelatex"));

@@ -67,11 +67,12 @@ import org.jabref.Globals;
 import org.jabref.gui.actions.Actions;
 import org.jabref.gui.actions.AutoLinkFilesAction;
 import org.jabref.gui.actions.ConnectToSharedDatabaseAction;
+import org.jabref.gui.actions.DisconnectFromSharelatexAction;
 import org.jabref.gui.actions.ErrorConsoleAction;
 import org.jabref.gui.actions.IntegrityCheckAction;
 import org.jabref.gui.actions.LookupIdentifierAction;
 import org.jabref.gui.actions.ManageKeywordsAction;
-import org.jabref.gui.actions.ManageShareLatexAction;
+import org.jabref.gui.actions.SynchronizeWithShareLatexAction;
 import org.jabref.gui.actions.MassSetFieldAction;
 import org.jabref.gui.actions.MnemonicAwareAction;
 import org.jabref.gui.actions.NewDatabaseAction;
@@ -394,8 +395,9 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
             Localization.lang("Unabbreviate journal names of the selected entries"),
             Globals.getKeyPrefs().getKey(KeyBinding.UNABBREVIATE));
     private final AbstractAction manageJournals = new ManageJournalsAction();
-    private final AbstractAction manageSharelatex = new ManageShareLatexAction();
+    private final AbstractAction synchronizeWithSharelatex = new SynchronizeWithShareLatexAction();
     private final AbstractAction sendChangesToShareLatex = new SendChangesToShareLatexAction();
+    private final AbstractAction disconnectFromSharelatex = new DisconnectFromSharelatexAction();
 
     private final AbstractAction databaseProperties = new DatabasePropertiesAction();
     private final AbstractAction bibtexKeyPattern = new BibtexKeyPatternAction();
@@ -1060,8 +1062,9 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         file.add(connectToSharedDatabaseAction);
         file.add(pullChangesFromSharedDatabase);
         file.addSeparator();
-        file.add(manageSharelatex);
+        file.add(synchronizeWithSharelatex);
         file.add(sendChangesToShareLatex);
+        file.add(disconnectFromSharelatex);
 
         file.addSeparator();
         file.add(databaseProperties);
@@ -1338,7 +1341,7 @@ public class JabRefFrame extends JFrame implements OutputPrinter {
         tlb.addAction(cleanupEntries);
         tlb.addAction(mergeEntries);
         tlb.addAction(pullChangesFromSharedDatabase);
-        tlb.addAction(manageSharelatex);
+        tlb.addAction(synchronizeWithSharelatex);
         tlb.addAction(openConsole);
 
         tlb.addSeparator();

@@ -85,8 +85,8 @@ public class WebSocketClientWrapper {
                 public boolean onConnectFailure(Exception exception) {
                     final int i = counter.incrementAndGet();
                     if (i <= 3) {
-                        System.out.println(
-                                "### Reconnecting... (reconnect count: " + i + ") " + exception.getMessage());
+                        LOGGER.debug(
+                                "### Reconnecting... (reconnect count: " + i + ")", exception);
                         return true;
                     } else {
                         messageLatch.countDown();
@@ -155,7 +155,9 @@ public class WebSocketClientWrapper {
     public void leaveDocument(String documentId) throws IOException {
         incrementCommandCounter();
         String text = "5:" + commandCounter + "+::{\"name\":\"leaveDoc\",\"args\":[\"" + documentId + "\"]}";
-        session.getBasicRemote().sendText(text);
+        if (session != null) {
+            session.getBasicRemote().sendText(text);
+        }
 
     }
 
@@ -284,8 +286,9 @@ public class WebSocketClientWrapper {
     public void leaveDocAndCloseConn() throws IOException {
         leaveDocument(docId);
         queue.clear();
-        session.close();
-
+        if (session != null) {
+            session.close();
+        }
     }
 
     public void setServerNameOrigin(String serverOrigin) {
