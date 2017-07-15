@@ -1,7 +1,5 @@
 package org.jabref.gui.sharelatex;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import javafx.fxml.FXML;
@@ -49,7 +47,7 @@ public class ShareLatexLoginDialogController extends AbstractController<ShareLat
                 dlgprojects.show();
                 closeDialog();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             FXDialog dlg = new FXDialog(AlertType.ERROR);
             dlg.setContentText(e.getMessage());
             dlg.showAndWait();

@@ -28,11 +28,17 @@ import org.jabref.model.entry.BibEntry;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.glassfish.tyrus.client.ClientManager;
 import org.glassfish.tyrus.client.ClientProperties;
 import org.glassfish.tyrus.ext.extension.deflate.PerMessageDeflateExtension;
 
 public class WebSocketClientWrapper {
+
+    private static final Log LOGGER = LogFactory.getLog(WebSocketClientWrapper.class);
+    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
+    private final ShareLatexParser parser = new ShareLatexParser();
 
     private Session session;
     private String oldContent;
@@ -46,9 +52,6 @@ public class WebSocketClientWrapper {
     private boolean leftDoc = false;
     private boolean errorReceived = false;
 
-    private final BlockingQueue<String> queue = new LinkedBlockingQueue<>();
-
-    private final ShareLatexParser parser = new ShareLatexParser();
     private String serverOrigin;
     private Map<String, String> cookies;
 
@@ -103,26 +106,23 @@ public class WebSocketClientWrapper {
 
                 @Override
                 public void onOpen(Session session, EndpointConfig config) {
-                    System.out.println("Session is open" + session.isOpen());
 
                     session.addMessageHandler(String.class, (Whole<String>) message -> {
-
                         message = parser.fixUTF8Strings(message);
-                        System.out.println("Received message: " + message);
+                        LOGGER.debug("Received new message " + message);
                         parseContents(message);
                     });
                 }
 
                 @Override
                 public void onError(Session session, Throwable t) {
-
-                    t.printStackTrace();
+                    LOGGER.error(t);
                 }
 
                 @Override
                 public void onClose(Session session, CloseReason closeReason) {
                     if (errorReceived) {
-                        System.out.println("Error received in close session");
+                        LOGGER.debug("Error received in close session");
                     }
 
                 }
@@ -173,7 +173,7 @@ public class WebSocketClientWrapper {
         List<SharelatexDoc> diffDocs = parser.generateDiffs(oldContent, newContent);
         String str = message.createUpdateMessageAsInsertOrDelete(docId, version, diffDocs);
 
-        System.out.println("Send new update Message");
+        LOGGER.debug("Send new update Message");
 
         session.getBasicRemote().sendText("5:::" + str);
     }
@@ -185,14 +185,13 @@ public class WebSocketClientWrapper {
             try {
                 String updatedContent = queue.take();
                 if (!leftDoc) {
-                    System.out.println("Taken from queue");
+                    LOGGER.debug("Taken from queue");
                     sendUpdateAsDeleteAndInsert(docId, 0, version, oldContent, updatedContent);
 
                 }
             } catch (IOException | InterruptedException e) {
-                // TODO Auto-generated catch block
                 Thread.currentThread().interrupt();
-                e.printStackTrace();
+                LOGGER.debug("Exception in taking from queue", e);
             }
         });
 
@@ -205,7 +204,7 @@ public class WebSocketClientWrapper {
             if (message.contains(":::1")) {
 
                 Thread.currentThread().sleep(300);
-                System.out.println("Got :::1. Joining project");
+                LOGGER.debug("Got :::1. Joining project");
 
             }
             if (message.contains("2::")) {
@@ -216,25 +215,24 @@ public class WebSocketClientWrapper {
             }
 
             if (message.endsWith("[null]")) {
-                System.out.println("Received null-> Rejoining doc");
+                LOGGER.debug("Received null-> Rejoining doc");
                 joinDoc(docId);
             }
 
             if (message.startsWith("[null,{", message.indexOf("+") + 1)) {
-                System.out.println("We get a list with all files");
+                LOGGER.debug("We get a list with all files");
                 //We get a list with all files
-                Map<String, String> dbWithID = parser.getBibTexDatabasesNameWithId(message);
 
-                setDocID(dbWithID.get("references.bib"));
+                String docIdOfFirstBibtex = parser.getFirstBibTexDatabaseId(message);
 
-                System.out.println("DBs with ID " + dbWithID);
-
+                LOGGER.debug("DBs with ID " + docIdOfFirstBibtex);
+                setDocID(docIdOfFirstBibtex);
                 joinDoc(docId);
 
             }
             if (message.contains("{\"name\":\"connectionAccepted\"}") && (projectId != null)) {
 
-                System.out.println("Joining project");
+                LOGGER.debug("Joining project");
                 Thread.sleep(200);
                 joinProject(projectId);
 
@@ -250,7 +248,7 @@ public class WebSocketClientWrapper {
                 setBibTexString(bibtexString);
                 List<BibEntry> entries = parser.parseBibEntryFromJsonMessageString(message, prefs);
 
-                System.out.println("Got new entries");
+                LOGGER.debug("Got new entries");
                 setLeftDoc(false);
 
                 eventBus.post(new ShareLatexEntryMessageEvent(entries, bibtexString));
@@ -259,7 +257,7 @@ public class WebSocketClientWrapper {
             }
 
             if (message.contains("otUpdateApplied")) {
-                System.out.println("We got an update");
+                LOGGER.debug("We got an update");
 
                 leaveDocument(docId);
                 setLeftDoc(true);
@@ -273,10 +271,9 @@ public class WebSocketClientWrapper {
             }
 
         } catch (IOException | ParseException e) {
-            e.printStackTrace();
+            LOGGER.error("Error in parsing", e);
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.debug(e);
         }
     }
 

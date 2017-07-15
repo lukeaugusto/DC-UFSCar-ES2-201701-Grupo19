@@ -16,7 +16,12 @@ import org.jabref.logic.sharelatex.ShareLatexManager;
 import org.jabref.model.database.BibDatabaseContext;
 import org.jabref.preferences.PreferencesService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class ShareLatexProjectDialogController extends AbstractController<ShareLatexProjectDialogViewModel> {
+
+    private static final Log LOGGER = LogFactory.getLog(ShareLatexProjectDialogViewModel.class);
 
     @FXML private TableColumn<ShareLatexProjectViewModel, Boolean> colActive;
     @FXML private TableColumn<ShareLatexProjectViewModel, String> colTitle;
@@ -33,8 +38,7 @@ public class ShareLatexProjectDialogController extends AbstractController<ShareL
         try {
             viewModel.addProjects(manager.getProjects());
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Could not add projects", e);
         }
 
         tblProjects.setEditable(true);

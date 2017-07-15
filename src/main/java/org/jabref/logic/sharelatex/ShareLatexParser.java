@@ -4,11 +4,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.StringJoiner;
-import java.util.TreeMap;
-
 import org.jabref.logic.importer.ImportFormatPreferences;
 import org.jabref.logic.importer.ParseException;
 import org.jabref.logic.importer.fileformat.BibtexParser;
@@ -46,8 +43,7 @@ public class ShareLatexParser {
         return obj.get("args").getAsJsonArray().get(0).getAsString();
     }
 
-    public Map<String, String> getBibTexDatabasesNameWithId(String json) {
-        Map<String, String> bibFileWithId = new TreeMap<>();
+    public String getFirstBibTexDatabaseId(String json) {
 
         JsonObject obj = parseFirstPartOfMessageAsArray(json).get(1).getAsJsonObject();
         JsonArray arr = obj.get("rootFolder").getAsJsonArray();
@@ -55,19 +51,20 @@ public class ShareLatexParser {
         Optional<JsonArray> docs = arr.get(0).getAsJsonObject().entrySet().stream()
                 .filter(entry -> entry.getKey().equals("docs")).map(v -> v.getValue().getAsJsonArray()).findFirst();
 
-        docs.ifPresent(jsonArray -> {
+        if (docs.isPresent()) {
+
+            JsonArray jsonArray = docs.get();
             for (JsonElement doc : jsonArray) {
                 String name = doc.getAsJsonObject().get("name").getAsString();
                 String id = doc.getAsJsonObject().get("_id").getAsString();
 
                 if (name.endsWith(".bib")) {
-                    bibFileWithId.put(name, id);
+                    return id;
                 }
 
             }
-        });
-
-        return bibFileWithId;
+        }
+        return "";
     }
 
     public List<SharelatexDoc> generateDiffs(String before, String after) {

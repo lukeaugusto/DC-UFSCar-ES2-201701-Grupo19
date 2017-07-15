@@ -17,8 +17,12 @@ import org.jabref.model.sharelatex.ShareLatexProject;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ShareLatexManager {
+
+    private static final Log LOGGER = LogFactory.getLog(ShareLatexManager.class);
 
     private final SharelatexConnector connector = new SharelatexConnector();
     private final List<ShareLatexProject> projects = new ArrayList<>();
@@ -38,10 +42,6 @@ public class ShareLatexManager {
                     String name = elem.getAsJsonObject().get("name").getAsString();
                     String lastUpdated = elem.getAsJsonObject().get("lastUpdated").getAsString();
                     String owner = elem.getAsJsonObject().get("owner_ref").getAsString();
-                    System.out.println("ID " + id);
-                    System.out.println("Name " + name);
-                    System.out.println("LastUpdated " + lastUpdated);
-                    System.out.println("Owner" + owner);
 
                     ShareLatexProject project = new ShareLatexProject(id, name, owner, lastUpdated);
                     projects.add(project);
@@ -56,16 +56,14 @@ public class ShareLatexManager {
 
             try {
                 connector.startWebsocketListener(projectID, database, preferences);
-                registerListener(ShareLatexManager.this);
             } catch (URISyntaxException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LOGGER.error(e);
             }
+            registerListener(ShareLatexManager.this);
+
         });
     }
 
-    //Send new changes to the server
-    //At best when we do a save operation
     public void sendNewDataseContent(BibDatabaseContext database) {
         try {
             BibtexDatabaseWriter<StringSaveSession> databaseWriter = new BibtexDatabaseWriter<>(StringSaveSession::new);
@@ -75,8 +73,7 @@ public class ShareLatexManager {
 
             connector.sendNewDatabaseContent(updatedcontent);
         } catch (InterruptedException | SaveException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Could not prepare databse for saving ", e);
         }
     }
 

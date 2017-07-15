@@ -14,6 +14,8 @@ import org.jabref.model.database.BibDatabaseContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.JSONObject;
 import org.jsoup.Connection;
@@ -23,6 +25,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 public class SharelatexConnector {
+
+    private static final Log LOGGER = LogFactory.getLog(SharelatexConnector.class);
 
     private final String contentType = "application/json; charset=utf-8";
     private final JsonParser parser = new JsonParser();
@@ -135,12 +139,11 @@ public class SharelatexConnector {
             setDatabaseName(database);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Problem starting websocket", e);
         }
     }
 
     public void sendNewDatabaseContent(String newContent) throws InterruptedException {
-
         client.sendNewDatabaseContent(newContent);
     }
 
@@ -157,14 +160,12 @@ public class SharelatexConnector {
         try {
             client.leaveDocAndCloseConn();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Problem leaving document and closing websocket", e);
         }
 
     }
 
     private void setDatabaseName(BibDatabaseContext database) {
-
         String dbName = database.getDatabasePath().map(Path::getFileName).map(Path::toString).orElse("");
         client.setDatabaseName(dbName);
     }

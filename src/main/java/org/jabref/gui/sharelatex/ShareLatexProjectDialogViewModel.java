@@ -18,8 +18,12 @@ import org.jabref.logic.sharelatex.events.ShareLatexEntryMessageEvent;
 import org.jabref.model.sharelatex.ShareLatexProject;
 
 import com.google.common.eventbus.Subscribe;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ShareLatexProjectDialogViewModel extends AbstractViewModel {
+
+    private static final Log LOGGER = LogFactory.getLog(ShareLatexProjectDialogViewModel.class);
 
     private final StateManager stateManager;
     private final SimpleListProperty<ShareLatexProjectViewModel> projects = new SimpleListProperty<>(
@@ -28,7 +32,6 @@ public class ShareLatexProjectDialogViewModel extends AbstractViewModel {
     public ShareLatexProjectDialogViewModel(StateManager stateManager, ShareLatexManager manager) {
         this.stateManager = stateManager;
         manager.registerListener(this);
-        //todo currently unused
     }
 
     public void addProjects(List<ShareLatexProject> projectsToAdd) {
@@ -50,8 +53,7 @@ public class ShareLatexProjectDialogViewModel extends AbstractViewModel {
             writer.close();
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOGGER.error("Problem writing new database content", e);
         }
 
     }
