@@ -21,6 +21,7 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
   - The buttons were changed to icons.
   - Completely new interface to add or modify linked files.
   - Removed the hidden feature that a double click in the editor inserted the current date.
+  - Complete new implementation of the the auto complete feature.
 - All authors and editors are separated using semicolons when exporting to csv. [#2762](https://github.com/JabRef/jabref/issues/2762)
 - Improved wording of "Show recommendations: into "Show 'Related Articles' tab" in the preferences
 - We added integration of the Library of Congress catalog as a fetcher based on the [LCCN identifier](https://en.wikipedia.org/wiki/Library_of_Congress_Control_Number). [Feature request 636 in the forum](http://discourse.jabref.org/t/loc-marc-mods-connection/636)
@@ -29,6 +30,7 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - We improved the duplicate checker such that different editions of the same publication are not marked as duplicates. [2960](https://github.com/JabRef/jabref/issues/2960)
 
 ### Fixed
+- We fixed a bug that leaves .sav file after SaveAs [#2947](https://github.com/JabRef/jabref/issues/2947)
 - We fixed the function "Edit - Copy BibTeX key and link" to pass a hyperlink rather than an HTML statement.
 - We fixed the adding of a new entry from DOI which led to a connection error. The DOI resolution now uses HTTPS to protect the user's privacy.[#2879](https://github.com/JabRef/jabref/issues/2897)
 - We fixed the IEEE Xplore web search functionality [#2789](https://github.com/JabRef/jabref/issues/2789)
@@ -42,7 +44,8 @@ We refer to [GitHub issues](https://github.com/JabRef/jabref/issues) by using `#
 - We fixed a bug where recursive RegExpBased search found a file in a subdirectory multiple times and non-recursive RegExpBased search erroneously found files in subdirectories.
 - We fixed a bug where new groups information was not stored on save [#2932](https://github.com/JabRef/jabref/issues/2932)
 - We fixed a bug where the language files for Brazilian Portugese could not be loaded and the GUI localization remained in English [#1128](https://github.com/JabRef/jabref/issues/1182)
-
+- We fixed a bug where the database was not marked as dirty when entries or groups were changed [#2787](https://github.com/JabRef/jabref/issues/2787)
+- We restored the original functionality that when browsing through the MainTable, the Entry Editor remembers which tab was opened before [#2896](https://github.com/JabRef/jabref/issues/2896)
 ### Removed
 
 
