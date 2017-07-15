@@ -79,6 +79,9 @@ public class SharelatexConnector {
         }
 
         loginCookies = loginResponse.cookies();
+        if (loginCookies.isEmpty()) {
+            loginCookies = welcomCookies;
+        }
 
         return "";
     }
