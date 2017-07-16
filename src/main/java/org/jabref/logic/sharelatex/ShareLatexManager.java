@@ -3,7 +3,7 @@ package org.jabref.logic.sharelatex;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jabref.JabRefExecutorService;
@@ -15,8 +15,6 @@ import org.jabref.logic.importer.ImportFormatPreferences;
 import org.jabref.model.database.BibDatabaseContext;
 import org.jabref.model.sharelatex.ShareLatexProject;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,30 +23,17 @@ public class ShareLatexManager {
     private static final Log LOGGER = LogFactory.getLog(ShareLatexManager.class);
 
     private final SharelatexConnector connector = new SharelatexConnector();
-    private final List<ShareLatexProject> projects = new ArrayList<>();
+    private final ShareLatexParser parser = new ShareLatexParser();
 
     public String login(String server, String username, String password) throws IOException {
         return connector.connectToServer(server, username, password);
     }
 
     public List<ShareLatexProject> getProjects() throws IOException {
-        connector.getProjects().ifPresent(jsonResponse -> {
-            if (jsonResponse.has("projects")) {
-                JsonArray projectArray = jsonResponse.get("projects").getAsJsonArray();
-                System.out.println(projectArray);
-                for (JsonElement elem : projectArray) {
-
-                    String id = elem.getAsJsonObject().get("id").getAsString();
-                    String name = elem.getAsJsonObject().get("name").getAsString();
-                    String lastUpdated = elem.getAsJsonObject().get("lastUpdated").getAsString();
-                    String owner = elem.getAsJsonObject().get("owner_ref").getAsString();
-
-                    ShareLatexProject project = new ShareLatexProject(id, name, owner, lastUpdated);
-                    projects.add(project);
-                }
-            }
-        });
-        return projects;
+        if (connector.getProjects().isPresent()) {
+            return parser.getProjectFromJson(connector.getProjects().get());
+        }
+        return Collections.emptyList();
     }
 
     public void startWebSocketHandler(String projectID, BibDatabaseContext database, ImportFormatPreferences preferences) {

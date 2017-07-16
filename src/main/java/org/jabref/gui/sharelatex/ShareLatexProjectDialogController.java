@@ -25,7 +25,8 @@ public class ShareLatexProjectDialogController extends AbstractController<ShareL
 
     @FXML private TableColumn<ShareLatexProjectViewModel, Boolean> colActive;
     @FXML private TableColumn<ShareLatexProjectViewModel, String> colTitle;
-    @FXML private TableColumn<ShareLatexProjectViewModel, String> colOwner;
+    @FXML private TableColumn<ShareLatexProjectViewModel, String> colFirstName;
+    @FXML private TableColumn<ShareLatexProjectViewModel, String> colLastName;
     @FXML private TableColumn<ShareLatexProjectViewModel, String> colLastModified;
     @FXML private TableView<ShareLatexProjectViewModel> tblProjects;
     @Inject private ShareLatexManager manager;
@@ -48,7 +49,8 @@ public class ShareLatexProjectDialogController extends AbstractController<ShareL
 
         colActive.setCellValueFactory(cellData -> cellData.getValue().isActiveProperty());
         colTitle.setCellValueFactory(cellData -> cellData.getValue().getProjectTitle());
-        colOwner.setCellValueFactory(cellData -> cellData.getValue().getOwner());
+        colFirstName.setCellValueFactory(cellData -> cellData.getValue().getFirstName());
+        colLastName.setCellValueFactory(cellData -> cellData.getValue().getLastName());
         colLastModified.setCellValueFactory(cellData -> cellData.getValue().getLastUpdated());
         setBindings();
 

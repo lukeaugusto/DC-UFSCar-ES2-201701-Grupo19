@@ -11,6 +11,7 @@ import org.jabref.logic.importer.ImportFormatPreferences;
 import org.jabref.logic.importer.ParseException;
 import org.jabref.logic.importer.fileformat.BibtexParser;
 import org.jabref.model.entry.BibEntry;
+import org.jabref.model.sharelatex.ShareLatexProject;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -101,6 +102,30 @@ public class ShareLatexParser {
 
         }
         return docsWithChanges;
+
+    }
+
+    public List<ShareLatexProject> getProjectFromJson(JsonObject json) {
+
+        List<ShareLatexProject> projects = new ArrayList<>();
+        if (json.has("projects")) {
+            JsonArray projectArray = json.get("projects").getAsJsonArray();
+            for (JsonElement elem : projectArray) {
+
+                String id = elem.getAsJsonObject().get("id").getAsString();
+                String name = elem.getAsJsonObject().get("name").getAsString();
+                String lastUpdated = elem.getAsJsonObject().get("lastUpdated").getAsString();
+                //String owner = elem.getAsJsonObject().get("owner_ref").getAsString();
+
+                JsonObject owner = elem.getAsJsonObject().get("owner").getAsJsonObject();
+                String firstName = owner.get("first_name").getAsString();
+                String lastName = owner.get("last_name").getAsString();
+
+                ShareLatexProject project = new ShareLatexProject(id, name, firstName, lastName, lastUpdated);
+                projects.add(project);
+            }
+        }
+        return projects;
 
     }
 

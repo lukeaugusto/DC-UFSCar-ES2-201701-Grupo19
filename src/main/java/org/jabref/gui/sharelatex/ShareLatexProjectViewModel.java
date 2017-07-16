@@ -17,13 +17,15 @@ public class ShareLatexProjectViewModel {
     private final SimpleBooleanProperty active = new SimpleBooleanProperty(false);
     private final String projectId;
     private final StringProperty projectTitle;
-    private final StringProperty owner;
+    private final StringProperty firstName;
+    private final StringProperty lastName;
     private final StringProperty lastUpdated;
 
     public ShareLatexProjectViewModel(ShareLatexProject project) {
         this.projectId = project.getProjectId();
         this.projectTitle = new SimpleStringProperty(project.getProjectTitle());
-        this.owner = new SimpleStringProperty(project.getOwner());
+        this.firstName = new SimpleStringProperty(project.getFirstName());
+        this.lastName = new SimpleStringProperty(project.getLastName());
         this.lastUpdated = new SimpleStringProperty(project.getLastUpdated());
     }
 
@@ -35,8 +37,12 @@ public class ShareLatexProjectViewModel {
         return projectTitle;
     }
 
-    public StringProperty getOwner() {
-        return owner;
+    public StringProperty getFirstName() {
+        return firstName;
+    }
+
+    public StringProperty getLastName() {
+        return lastName;
     }
 
     public StringProperty getLastUpdated() {

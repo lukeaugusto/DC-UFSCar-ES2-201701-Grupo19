@@ -15,7 +15,8 @@
               <columns>
                   <TableColumn fx:id="colActive" prefWidth="75.0" text="Active" />
                 <TableColumn fx:id="colTitle" prefWidth="75.0" text="Title" />
-                <TableColumn fx:id="colOwner" prefWidth="75.0" text="Owner" />
+                <TableColumn fx:id="colFirstName" prefWidth="75.0" text="First Name" />
+                  <TableColumn fx:id="colLastName" prefWidth="75.0" text="Last Name" />
                   <TableColumn fx:id="colLastModified" prefWidth="75.0" text="Last modified" />
               </columns>
             </TableView>

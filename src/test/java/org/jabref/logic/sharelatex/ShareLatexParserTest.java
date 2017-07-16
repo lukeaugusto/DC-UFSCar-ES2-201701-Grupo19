@@ -2,6 +2,12 @@ package org.jabref.logic.sharelatex;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jabref.model.sharelatex.ShareLatexProject;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -9,6 +15,25 @@ import static org.junit.Assert.assertEquals;
 public class ShareLatexParserTest {
 
     private final ShareLatexParser parser = new ShareLatexParser();
+
+    @Test
+    public void testGetSharelatexProjects() {
+        JsonParser jsonParser = new JsonParser();
+        String jsonString = "{\"projects\":[{\"id\":\"58df8f5e27aa5281020536ea\",\"name\":\"PLoS one\",\"lastUpdated\":\"2017-06-07T08:42:14.632Z\",\"publicAccessLevel\":\"private\",\"accessLevel\":\"owner\",\"archived\":false,\"owner_ref\":\"58df8f3627aa5281020536e1\",\"owner\":{\"_id\":\"58df8f3627aa5281020536e1\",\"last_name\":\"\",\"first_name\":\"cschwentker\"}},{\"id\":\"5950e47621d8ee3e76616374\",\"name\":\"Example\",\"lastUpdated\":\"2017-07-16T09:49:16.241Z\",\"publicAccessLevel\":\"private\",\"accessLevel\":\"owner\",\"archived\":false,\"owner_ref\":\"58df8f3627aa5281020536e1\",\"owner\":{\"_id\":\"58df8f3627aa5281020536e1\",\"last_name\":\"\",\"first_name\":\"cschwentker\"}}],\"tags\":[{\"_id\":\"59353074a47d9c0eb124ed11\",\"user_id\":\"58df8f3627aa5281020536e1\",\"name\":\"TestFolder\",\"project_ids\":[]}],\"notifications\":[]}";
+        JsonElement jsonTree = jsonParser.parse(jsonString);
+        JsonObject obj = jsonTree.getAsJsonObject();
+
+        List<ShareLatexProject> actual = parser.getProjectFromJson(obj);
+
+        List<ShareLatexProject> expected = new ArrayList<>();
+        ShareLatexProject project = new ShareLatexProject("58df8f5e27aa5281020536ea", "PLoS one", "cschwentker", "", "2017-06-07T08:42:14.632Z");
+        expected.add(project);
+        project = new ShareLatexProject("5950e47621d8ee3e76616374", "Example", "cschwentker", "", "2017-07-16T09:49:16.241Z");
+        expected.add(project);
+
+        assertEquals(expected, actual);
+
+    }
 
     @Test
     public void testFixWrongUTF8IsoEncoded() {

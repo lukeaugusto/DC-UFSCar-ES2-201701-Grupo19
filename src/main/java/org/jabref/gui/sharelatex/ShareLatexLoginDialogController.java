@@ -8,7 +8,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import org.jabref.gui.AbstractController;
+import org.jabref.gui.DialogService;
 import org.jabref.gui.FXDialog;
+import org.jabref.gui.FXDialogService;
 import org.jabref.logic.sharelatex.ShareLatexManager;
 
 public class ShareLatexLoginDialogController extends AbstractController<ShareLatexLoginDialogViewModel> {
@@ -30,14 +32,9 @@ public class ShareLatexLoginDialogController extends AbstractController<ShareLat
 
     @FXML
     private void signIn() {
-        System.out.println("sign in pressed");
-        System.out.println(tbAddress.getText());
-        System.out.println(tbUsername.getText());
-        System.out.println(pfPassword.getText());
 
-        String result;
         try {
-            result = manager.login(tbAddress.getText(), tbUsername.getText(), pfPassword.getText());
+            String result = manager.login(tbAddress.getText(), tbUsername.getText(), pfPassword.getText());
             if (result.contains("incorrect")) {
                 FXDialog dlg = new FXDialog(AlertType.ERROR);
                 dlg.setContentText("Your email or password is incorrect. Please try again");
@@ -48,9 +45,8 @@ public class ShareLatexLoginDialogController extends AbstractController<ShareLat
                 closeDialog();
             }
         } catch (Exception e) {
-            FXDialog dlg = new FXDialog(AlertType.ERROR);
-            dlg.setContentText(e.getMessage());
-            dlg.showAndWait();
+            DialogService dlg = new FXDialogService();
+            dlg.showErrorDialogAndWait(e);
 
         }
 
