@@ -32,6 +32,70 @@ public class BibEntryWriterTest {
         writer = new BibEntryWriter(
                 new LatexFieldFormatter(JabRefPreferences.getInstance().getLatexFieldFormatterPreferences()), true);
     }
+	 @Test
+    public void testBook() throws IOException {
+        StringWriter stringWriter = new StringWriter();
+
+        BibEntry entry = new BibEntry("book");
+        //set a required field
+        entry.setField("title", "The International Publisher of Something");
+        entry.setField("author", "Foo Bar");
+        entry.setField("editor", "Pedro Vaz");
+
+        //set an optional field
+        entry.setField("number", "1");
+        entry.setField("address", "Alameda das Papoulas");
+        entry.setField("note", "some note");
+
+        writer.write(entry, stringWriter, BibDatabaseMode.BIBTEX);
+
+        String actual = stringWriter.toString();
+
+        // @formatter:off
+        String expected = OS.NEWLINE + "@Book{," + OS.NEWLINE +
+                "  title   = {The International Publisher of Something}," + OS.NEWLINE +
+                "  author  = {Foo Bar}," + OS.NEWLINE +
+                "  editor  = {Pedro Vaz}," + OS.NEWLINE +
+                "  number  = {1}," + OS.NEWLINE +
+                "  address = {Alameda das Papoulas}," + OS.NEWLINE +
+                "  note    = {some note}," + OS.NEWLINE +
+                "}" + OS.NEWLINE;
+        // @formatter:on
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testArticle() throws IOException {
+        StringWriter stringWriter = new StringWriter();
+
+        BibEntry entry = new BibEntry("Article");
+        //set a required field
+
+        entry.setField("author", "Foo Bar");
+        entry.setField("title", "The International Publisher of Something");
+        entry.setField("journal", "International Journal of Something");
+
+        //set an optional field
+        entry.setField("pages", "100");
+        entry.setField("note", "some note");
+
+        writer.write(entry, stringWriter, BibDatabaseMode.BIBTEX);
+
+        String actual = stringWriter.toString();
+
+        // @formatter:off
+        String expected = OS.NEWLINE + "@Article{," + OS.NEWLINE +
+                "  author  = {Foo Bar}," + OS.NEWLINE +
+                "  title   = {The International Publisher of Something}," + OS.NEWLINE +
+                "  journal = {International Journal of Something}," + OS.NEWLINE +
+                "  pages   = {100}," + OS.NEWLINE +
+                "  note    = {some note}," + OS.NEWLINE +
+                "}" + OS.NEWLINE;
+        // @formatter:on
+
+        assertEquals(expected, actual);
+    }
 
     @Test
     public void testSerialization() throws IOException {
